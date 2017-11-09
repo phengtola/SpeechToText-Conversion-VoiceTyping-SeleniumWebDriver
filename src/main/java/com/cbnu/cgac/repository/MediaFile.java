@@ -1,6 +1,7 @@
 package com.cbnu.cgac.repository;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.ManyToAny;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -13,7 +14,7 @@ public class MediaFile implements Serializable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "id" , columnDefinition = "SERIAL")
     private int id;
 
    @Column(name="title")
@@ -35,13 +36,27 @@ public class MediaFile implements Serializable{
             columnDefinition="TIMESTAMP default NOW()")
     private Date createdDate;
 
+    @Column(name = "minutes")
+    private double minutes;
 
-    public MediaFile(String title, String googleDocUrl, String speech, String status, String createdBy) {
+    @JoinColumn(name="category_file_id")
+    private int categoryFileId;
+
+    @Column(name="machine_id")
+    private String machineId;
+
+
+
+
+    public MediaFile(String title, String googleDocUrl, String speech, String status, String createdBy , int categoryFileId , String machineId , double minutes) {
         this.title = title;
         this.googleDocUrl = googleDocUrl;
         this.speech = speech;
         this.status = status;
         this.createdBy = createdBy;
+        this.categoryFileId = categoryFileId;
+        this.machineId = machineId;
+        this.minutes = minutes;
     }
 
     public int getId() {
@@ -90,5 +105,21 @@ public class MediaFile implements Serializable{
 
     public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
+    }
+
+    public void setMachineId(String machineId) {
+        this.machineId = machineId;
+    }
+
+    public String getMachineId() {
+        return machineId;
+    }
+
+    public void setMinutes(double minutes) {
+        this.minutes = minutes;
+    }
+
+    public double getMinutes() {
+        return minutes;
     }
 }

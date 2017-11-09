@@ -1,5 +1,6 @@
 package com.cbnu.cgac;
 
+import com.cbnu.cgac.repository.CategoryFile;
 import com.cbnu.cgac.repository.MediaFile;
 import com.cbnu.cgac.repository.MediaFileRepository;
 import com.cbnu.cgac.selenium.SeleniumWebDriver;
@@ -30,6 +31,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -50,11 +53,16 @@ public class Main extends Application {
 
     public static final int FILE_EXTENSION_LEN = 3;
 
+
     final Label currentlyPlaying = new Label();
     final ProgressBar progress = new ProgressBar();
     final TableView<Map> metadataTable = new TableView<>();
     private ChangeListener<Duration> progressChangeListener;
     private MapChangeListener<String, Object> metadataChangeListener;
+    private Button btPrevious = new Button("Pre");
+    private Button btTitle = new Button("Title");
+
+    private TextField txCategoryId = new TextField();
 
     private String currentPlayingTitle = "";
     private String userEmail;
@@ -166,10 +174,12 @@ public class Main extends Application {
         final MediaView mediaView = new MediaView(players.get(0));
         mediaView.setFitWidth(400);
 
-        final Button skip = new Button("Skip");  skip.setDisable(true);
+        final Button skip = new Button("Next");  skip.setDisable(true);
         final Button play = new Button("Start"); play.setDisable(true);
         final Button browse = new Button("Browse"); browse.setDisable(true);
         final Button googleDocs = new Button("Open Google Docs");
+        final TextField machineName = new TextField();
+
 
         final TextField txTextFiled = new TextField();
         txTextFiled.setText(MUSIC_DIR);
@@ -184,6 +194,7 @@ public class Main extends Application {
             player.setOnEndOfMedia(new Runnable() {
                 @Override public void run() {
 
+                    System.out.println("Finished " + player.getTotalDuration().toMinutes() );
 
                     googleChromeRemoting.stopViceTyping(driver);
 
@@ -193,7 +204,21 @@ public class Main extends Application {
                         e.printStackTrace();
                     }
 
-                    //WebElement e = driver.findElement (By.className ("kix-lineview")); //driver is a FirefoxDriver
+                    //WebElement e = driver.findElement (By.className ("kit-page-content-wrapper"));
+                    //e.getText();
+
+
+                   // List<WebElement> lstWebElement = (List<WebElement>) driver.findElements (By.className ("kit-page-content-wrapper"));//new ArrayList<WebElement>();
+                    //WebDriverWait wait = new WebDriverWait(driver, 20);
+
+                   // one page has 1 so it has many elements
+                    //int page = 1;
+                    //for( WebElement e: lstWebElement){
+                    //   System.out.println(page + "=====CONTNET======" +  e.getText());
+                    //   wait.until(ExpectedConditions.elementToBeClickable(e));
+                    //    e.getText();
+                    //    page++;
+                    //}
 
                     System.out.println(currentPlayingTitle +" | "+ driver.getCurrentUrl());
 
@@ -206,7 +231,10 @@ public class Main extends Application {
                                 if(mediaFileRepository == null){
                                     mediaFileRepository = new MediaFileRepository();
                                 }
-                                mediaFileRepository.saveGeneratedMediaFIle(new MediaFile(currentPlayingTitle, driver.getCurrentUrl(), "", "1", userEmail));
+
+
+
+                                mediaFileRepository.saveGeneratedMediaFIle(new MediaFile(playingId+"_"+currentPlayingTitle, driver.getCurrentUrl(), "", "1", userEmail , Integer.parseInt(txCategoryId.getText()), machineName.getText().trim() , player.getTotalDuration().toMinutes()));
                                 Thread.sleep(100);
                             } catch (InterruptedException ex) {
                                 System.err.println("Error on Thread Sleep");
@@ -438,14 +466,43 @@ public class Main extends Application {
         // allow the user to skip a track.
         skip.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent actionEvent) {
-                final MediaPlayer curPlayer = mediaView.getMediaPlayer();
-                curPlayer.currentTimeProperty().removeListener(progressChangeListener);
-                curPlayer.getMedia().getMetadata().removeListener(metadataChangeListener);
-                curPlayer.stop();
+                try {
+                    final MediaPlayer curPlayer = mediaView.getMediaPlayer();
+                    curPlayer.currentTimeProperty().removeListener(progressChangeListener);
+                    curPlayer.getMedia().getMetadata().removeListener(metadataChangeListener);
+                    curPlayer.stop();
 
-                MediaPlayer nextPlayer = players.get((players.indexOf(curPlayer) + 1) % players.size());
-                mediaView.setMediaPlayer(nextPlayer);
-                nextPlayer.play();
+                    MediaPlayer nextPlayer = players.get((players.indexOf(curPlayer) + 1) % players.size());
+                    mediaView.setMediaPlayer(nextPlayer);
+                    nextPlayer.play();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        btPrevious.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent actionEvent) {
+                try {
+                    final MediaPlayer curPlayer = mediaView.getMediaPlayer();
+                    curPlayer.currentTimeProperty().removeListener(progressChangeListener);
+                    curPlayer.getMedia().getMetadata().removeListener(metadataChangeListener);
+                    curPlayer.stop();
+                    if(playingId > 1){
+                        playingId = playingId - 2;
+                    }
+                    MediaPlayer nextPlayer = players.get((players.indexOf(curPlayer) - 1) % players.size() );
+                    mediaView.setMediaPlayer(nextPlayer);
+                    nextPlayer.play();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        btTitle.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent actionEvent) {
+                googleChromeRemoting.setGoogleDocsTitle(driver,playingId+"."+currentPlayingTitle);
             }
         });
 
@@ -623,15 +680,22 @@ public class Main extends Application {
         txTextFiled.setEditable(false);
         browseRow.setHgrow(txTextFiled, Priority.ALWAYS);
 
+        final HBox categoryIdRow = new HBox(10);
+        Label labelCateory = new Label("Category id");
+        Label labelMachine = new Label("Machine");
+        categoryIdRow.setAlignment(Pos.BASELINE_LEFT);
+        categoryIdRow.getChildren().setAll(labelCateory,txCategoryId ,labelMachine,machineName );
+
         final HBox progressReport = new HBox(10);
         progressReport.setAlignment(Pos.CENTER);
-        progressReport.getChildren().setAll(play,skip, progress,   mediaView   );
+        progressReport.getChildren().setAll(play,btPrevious,skip,btTitle, progress,   mediaView   );
 
 
 
         final VBox content = new VBox(10);
         content.getChildren().setAll(
                 browseRow,
+                categoryIdRow,
                 currentlyPlaying,
                 progressReport,
                 metadataTable

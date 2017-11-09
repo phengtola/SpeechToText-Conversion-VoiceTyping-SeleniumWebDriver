@@ -40,9 +40,9 @@ public class MediaFileRepository {
 
     }
 
-    public static void main(String args[]){
-        new MediaFileRepository().saveGeneratedMediaFIle(new MediaFile("test","docs", "","1","tola"));
-    }
+    //public static void main(String args[]){
+    //    new MediaFileRepository().saveGeneratedMediaFIle(new MediaFile("test","docs", "","1","tola", 40));
+    //}
 
 
 
