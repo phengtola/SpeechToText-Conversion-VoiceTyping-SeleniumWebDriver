@@ -7,9 +7,15 @@
 
       <!-- Connection settings -->
       <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
+<<<<<<< Updated upstream
       <property name="hibernate.connection.url">jdbc:postgresql://??????:??????/SPEECH_TO_TEXT</property>
       <property name="hibernate.connection.username">postgres</property>
       <property name="hibernate.connection.password">????????</property>
+=======
+      <property name="hibernate.connection.url">jdbc:postgresql://210.125.146.185:5432/SPEECH_TO_TEXT</property>
+      <property name="hibernate.connection.username">postgres</property>
+      <property name="hibernate.connection.password">gac123!@#$</property>
+>>>>>>> Stashed changes
 
       <!-- SQL dialect -->
       <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
@@ -22,6 +28,7 @@
 
       <!-- Annotated entity classes -->
       <mapping class="com.cbnu.cgac.repository.MediaFile"/>
+      <mapping class="com.cbnu.cgac.repository.CategoryFile"/>
 
    </session-factory>
 </hibernate-configuration>
