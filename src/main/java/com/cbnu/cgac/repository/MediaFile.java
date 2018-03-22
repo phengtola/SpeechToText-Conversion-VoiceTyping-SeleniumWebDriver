@@ -59,6 +59,9 @@ public class MediaFile implements Serializable{
         this.minutes = minutes;
     }
 
+    public MediaFile() {
+    }
+
     public int getId() {
         return id;
     }
