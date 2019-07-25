@@ -7,6 +7,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -45,11 +47,16 @@ public class SeleniumWebDriver {
 
         ClassLoader classloader = Thread.currentThread().getContextClassLoader();
 
-        //System.setProperty("webdriver.chrome.driver", "src/main/resources/chromedriver.exe");
+        
         ///System.setProperty("webdriver.chrome.driver", ""+new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/chromedriver.exe"))));
+       
+        System.setProperty("webdriver.firefox.marionette","src/main/resources/geckodriver.exe");
+//        System.setProperty("webdriver.chrome.driver", "src/main/resources/chromedriver.exe");
+        
         ChromeDriverManager.getInstance().setup();
 
-        ChromeOptions options = new ChromeOptions();
+//        ChromeOptions options = new ChromeOptions();
+        FirefoxOptions options = new FirefoxOptions();
         options.addArguments("test-type");
         options.addArguments("--start-maximized");
         options.addArguments("--disable-web-security");
@@ -58,8 +65,8 @@ public class SeleniumWebDriver {
         options.addArguments("use-fake-device-for-media-stream");
         options.addArguments("use-fake-ui-for-media-stream");
 
-        //ChromeOptions options = new ChromeOptions();
-        WebDriver driver = new ChromeDriver(options);
+//        WebDriver driver = new ChromeDriver(options);
+        WebDriver driver = new FirefoxDriver(options);
 
         driver.get("https://docs.google.com/document/create");
 
