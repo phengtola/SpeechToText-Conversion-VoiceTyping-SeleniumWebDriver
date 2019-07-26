@@ -7,9 +7,9 @@
 
       <!-- Connection settings -->
        <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
-       <property name="hibernate.connection.url">jdbc:postgresql://110.74.194.125:5432/tola_speech_recognition_db</property>
-       <property name="hibernate.connection.username">postgres</property>
-       <property name="hibernate.connection.password">hrd@125a</property>
+       <property name="hibernate.connection.url">jdbc:postgresql://XXX:5432/tola_speech_recognition_db</property>
+       <property name="hibernate.connection.username">XXX</property>
+       <property name="hibernate.connection.password">XXX</property>
 
       <!-- SQL dialect -->
       <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>

@@ -7,9 +7,9 @@
 
       <!-- Connection settings -->
        <property name="hibernate.connection.driver_class">com.mysql.cj.jdbc.Driver</property>
-       <property name="hibernate.connection.url">jdbc:mysql://113.198.137.146:3306/SPEECH_TO_TEXT?serverTimezone=UTC</property>
-       <property name="hibernate.connection.username">Lee</property>
-       <property name="hibernate.connection.password">0918</property>
+       <property name="hibernate.connection.url">jdbc:mysql://XXX:3306/SPEECH_TO_TEXT?serverTimezone=UTC</property>
+       <property name="hibernate.connection.username">XXX</property>
+       <property name="hibernate.connection.password">XXX</property>
 
       <!-- SQL dialect -->
       <property name="hibernate.dialect">org.hibernate.dialect.MariaDBDialect</property>
